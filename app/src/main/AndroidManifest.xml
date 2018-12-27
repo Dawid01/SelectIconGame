@@ -17,7 +17,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity" />
-        <activity android:name=".MultiRooms"></activity>
+        <activity android:name=".MultiRooms" />
+        <activity android:name=".MultiGameActivity"></activity>
     </application>
 
 </manifest>
