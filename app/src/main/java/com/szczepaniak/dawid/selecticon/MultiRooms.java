@@ -61,8 +61,15 @@ public class MultiRooms extends AppCompatActivity {
 
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         final View room = getLayoutInflater().inflate(R.layout.room_layout, null, false);
-                        TextView name = room.findViewById(R.id.Name);
+                        final TextView name = room.findViewById(R.id.Name);
                         name.setText(document.getId());
+                        room.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                                joinToRoom(name.getText().toString());
+                            }
+                        });
                         roomsLayout.addView(room);
                     }
                 } else {
@@ -90,16 +97,19 @@ public class MultiRooms extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                String roomName = roomNameText.getText().toString();
+                final String roomName = roomNameText.getText().toString();
                 String password = passwordText.getText().toString();
-                String playerName = playerNameText.getText().toString();
+                final String playerName = playerNameText.getText().toString();
 
                 if(roomName != "" && password != "" && playerName != ""){
 
+                    Map<String, Object>  gamers = new HashMap<>();
+                    gamers.put(playerName, new ArrayList<Integer>());
                     Map<String, Object> gameRoom = new HashMap<>();
                     gameRoom.put("RoomName", roomName);
                     gameRoom.put("Password", password);
                     gameRoom.put("GameAdministrator", playerName);
+                    gameRoom.put("Gamers", gamers);
 
                     firestore.collection("Games").document(roomName)
                             .set(gameRoom)
@@ -109,6 +119,8 @@ public class MultiRooms extends AppCompatActivity {
 
                                     mpopup.dismiss();
                                     Intent multiIntent =  new Intent(MultiRooms.this, MultiGameActivity.class);
+                                    multiIntent.putExtra("RoomName", roomName);
+                                    multiIntent.putExtra("PlayerName", playerName);
                                     MultiRooms.this.startActivity(multiIntent);
                                 }
                             })
@@ -122,5 +134,11 @@ public class MultiRooms extends AppCompatActivity {
 
             }
         });
+    }
+
+
+    void joinToRoom(String roomName){
+
+
     }
 }
